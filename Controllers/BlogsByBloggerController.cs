@@ -30,7 +30,8 @@ namespace BlogHeaven.Controllers
             }
             var blogByBlogger = blog.BlogsByBlogger.FirstOrDefault(c=>c.BlogId==blogId);
 
-            if (blogByBlogger == null) { return NotFound(); }
+            if (blogByBlogger == null) 
+                return NotFound(); 
             return Ok(blogByBlogger);
         }
 
@@ -41,6 +42,7 @@ namespace BlogHeaven.Controllers
             var blog =BlogsDataStore.Current.Blogs.FirstOrDefault(c=>c.BloggerId==bloggerId);
             if(blog == null)
                 return NotFound();
+
             var maxBlogsByBloggerId = BlogsDataStore.Current.Blogs.SelectMany(c => c.BlogsByBlogger).Max(p => p.BlogId);
 
             var finalBlogsByBlogger = new BlogsByBloggerDto()
@@ -64,10 +66,12 @@ namespace BlogHeaven.Controllers
             int blogId,BlogsByBloggerForCreationDto blogsByBlogger)
         {
             var blog=BlogsDataStore.Current.Blogs.FirstOrDefault(c=>c.BloggerId==bloggerId);
-            if(blog == null) return NotFound();
+            if(blog == null) 
+                return NotFound();
 
             var blogByBloggerFromStore = blog.BlogsByBlogger.FirstOrDefault(c=>c.BlogId==blogId);   
-            if(blogByBloggerFromStore == null) return NotFound();
+            if(blogByBloggerFromStore == null) 
+                return NotFound();
 
             blogByBloggerFromStore.BlogTitle=blogsByBlogger.BlogTitle;
             blogByBloggerFromStore.BlogDescription=blogsByBlogger.BlogDescription;
@@ -79,10 +83,12 @@ namespace BlogHeaven.Controllers
             JsonPatchDocument<BlogsByBloggerUpdateDto> patchDocument)
         {
             var blog = BlogsDataStore.Current.Blogs.FirstOrDefault(c=>c.BloggerId == bloggerId);
-            if(blog == null) return NotFound();
+            if(blog == null) 
+                return NotFound();
 
             var blogByBloggerFromStore = blog.BlogsByBlogger.FirstOrDefault(c=>c.BlogId == blogId);
-            if(blogByBloggerFromStore == null) return NotFound() ;
+            if(blogByBloggerFromStore == null) 
+                return NotFound() ;
 
             var blogByBloggerToPatch = new BlogsByBloggerUpdateDto()
             {
@@ -94,9 +100,24 @@ namespace BlogHeaven.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            if(!TryValidateModel(blogByBloggerToPatch)) 
+                return BadRequest(ModelState);  
+
             blogByBloggerFromStore.BlogTitle=blogByBloggerToPatch.BlogTitle;
             blogByBloggerFromStore.BlogDescription=blogByBloggerToPatch.BlogDescription;
 
+            return NoContent();
+        }
+        [HttpDelete]
+        public ActionResult DeleteBlogByBlogger(int bloggerId,int blogId)
+        {
+            var blog =BlogsDataStore.Current.Blogs.FirstOrDefault(c=>c.BloggerId == bloggerId);
+            if(blog == null) 
+                return NotFound() ;
+            var blogByBloggerFromStore = blog.BlogsByBlogger.FirstOrDefault(c=>c.BlogId== blogId);
+            if(blogByBloggerFromStore== null)
+                return NotFound();
+            blog.BlogsByBlogger.Remove(blogByBloggerFromStore);
             return NoContent();
         }
     }

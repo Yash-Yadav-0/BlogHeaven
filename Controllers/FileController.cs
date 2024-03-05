@@ -29,5 +29,20 @@ namespace BlogHeaven.Controllers
             var bytes=System.IO.File.ReadAllBytes(filePath);
             return File(bytes, contentType, Path.GetFileName(filePath));
         }
+        [HttpPost]
+        public async Task<ActionResult> CreateFile(IFormFile file)
+        {
+            //validate input
+            if(file.Length == 0 || file.Length > 20099 || file.ContentType!="Profile/pdf")
+            {
+                return BadRequest("No file or invalid input");
+            }
+            var path = Path.Combine(Directory.GetCurrentDirectory(),$"uploaded_file_{Guid.NewGuid()}.pdf");
+            using(var stream = new FileStream(path, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            return Ok("Your file has been uploaded successfully!");
+        }
     }
 }
