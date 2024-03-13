@@ -1,9 +1,9 @@
 ﻿using BlogHeaven.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlogHeaven.DbContext
+namespace BlogHeaven.DatabaseContext
 {
-    public class BlogHeavenContext : Microsoft.EntityFrameworkCore.DbContext
+    public class BlogHeavenContext : DbContext
     {
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<BlogsByBlogger> BlogsByBlogger { get; set; }

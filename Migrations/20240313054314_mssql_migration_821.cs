@@ -5,7 +5,7 @@
 namespace BlogHeaven.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDataSeed1 : Migration
+    public partial class mssql_migration_821 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

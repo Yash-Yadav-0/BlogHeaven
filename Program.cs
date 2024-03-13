@@ -1,11 +1,20 @@
-using BlogHeaven.DbContext;
+using BlogHeaven.DatabaseContext;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
+});
+
 builder.Services.AddControllers();
+builder.Services.AddAuthentication();
 // Add services to the container.
 
 builder.Services.AddControllers(option =>
@@ -29,11 +38,20 @@ builder.Services.AddMvc(option =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
-builder.Services.AddDbContext<BlogHeavenContext>(DbContextOptions=>DbContextOptions.UseSqlite("Data Source=BlogHeaven.db"));
+//builder.Services.AddDbContext<BlogHeavenContext>(DbContextOptions=>DbContextOptions.UseSqlite("Data Source=BlogHeaven.db"));
+builder.Services.AddDbContext<BlogHeavenContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
 var app = builder.Build();
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+app.UseAuthentication();
+app.MapGet("/", () => "10.0.0.100");
 // Configure the HTTP request pipeline.
 
 app.UseSwagger();

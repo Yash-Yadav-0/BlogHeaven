@@ -15,7 +15,7 @@ namespace BlogHeaven.Entities
         [ForeignKey("BloggerId")]
         public Blog? Blog { get; set; }
         public int BloggerId { get; set; }
-        public BlogsByBlogger(string blogTitle)
+        public BlogsByBlogger(string? blogTitle)
         {
             BlogTitle = blogTitle;
         }
