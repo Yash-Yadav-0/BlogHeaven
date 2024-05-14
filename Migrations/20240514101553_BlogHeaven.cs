@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -7,7 +8,7 @@
 namespace BlogHeaven.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialSql : Migration
+    public partial class BlogHeaven : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,10 +17,10 @@ namespace BlogHeaven.Migrations
                 name: "Blogs",
                 columns: table => new
                 {
-                    BloggerId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BloggerName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    BloggerDescription = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
+                    BloggerId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    BloggerName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    BloggerDescription = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -30,11 +31,11 @@ namespace BlogHeaven.Migrations
                 name: "BlogsByBlogger",
                 columns: table => new
                 {
-                    BlogId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BlogTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    BlogDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BloggerId = table.Column<int>(type: "int", nullable: false)
+                    BlogId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    BlogTitle = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    BlogDescription = table.Column<string>(type: "text", nullable: false),
+                    BloggerId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

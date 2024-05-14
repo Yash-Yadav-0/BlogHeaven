@@ -1,32 +1,39 @@
-﻿using BlogHeaven.Models;
+﻿using BlogHeaven.DatabaseContext;
+using BlogHeaven.Entities;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BlogHeaven.Controllers
 {
     [ApiController]
-    [Route("api/blogs")]
+    [Route("api/[controller]")]
     public class BlogsController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult<IEnumerable<BlogDto>> GetBlogs()
+        private readonly BlogHeavenContext _context;
+
+        public BlogsController(BlogHeavenContext context)
         {
-            return Ok(BlogsDataStore.Current.Blogs);
+            _context = context;
         }
 
-        // GET api/<BlogsController>/5
-        [HttpGet("id={id}")]
-        public ActionResult<BlogDto> GetBlog(int id)
+        [HttpGet]
+        public ActionResult<IEnumerable<Blog>> GetBlogs()
         {
-            var blogToReturn = BlogsDataStore.Current.Blogs.FirstOrDefault(b=> b.BloggerId == id);
-            if (blogToReturn == null)
+            var blogs = _context.Blogs.ToList();
+            return Ok(blogs);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<Blog> GetBlog(int id)
+        {
+            var blog = _context.Blogs.FirstOrDefault(b => b.BloggerId == id);
+            if (blog == null)
             {
                 return NotFound();
             }
-            return Ok(blogToReturn);
+            return Ok(blog);
         }
-
-        // POST api/<BlogsController>
-        
     }
 }
